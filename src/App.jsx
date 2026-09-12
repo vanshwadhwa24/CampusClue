@@ -99,6 +99,7 @@ function App() {
   }
 
   function startGame() {
+    window.scrollTo({ top: 0, behavior: "instant" });
     setIsGameOver(false);
     setRound(1);
     setTotalScore(0);
@@ -115,6 +116,7 @@ function App() {
   }
 
   function nextRound() {
+    window.scrollTo({ top: 0, behavior: "instant" });
     const currentRoundScore = roundScore || 0;
     const newTotalScore = totalScore + currentRoundScore;
     setTotalScore(newTotalScore);
@@ -190,24 +192,31 @@ function App() {
 
       {/* PEEK PHOTO MODAL */}
       {showPeekModal && (
-        <div className="fixed inset-0 z-50 bg-black/80 backdrop-blur-md flex items-center justify-center p-4 animate-spot-fade">
-          <div className="relative w-full max-w-2xl bg-[#0b1021] border-4 border-black p-4 sm:p-6 rounded-3xl shadow-[12px_12px_0px_0px_#000] flex flex-col items-center gap-4">
+        <div className="fixed inset-0 z-50 bg-black/85 backdrop-blur-md flex items-center justify-center p-3 sm:p-6 animate-spot-fade">
+          <div className="relative w-full max-w-4xl lg:max-w-5xl bg-[#0b1021] border-4 sm:border-6 border-black p-4 sm:p-6 rounded-3xl shadow-[12px_12px_0px_0px_#000] flex flex-col items-center gap-4 max-h-[95vh]">
             <div className="w-full flex justify-between items-center border-b-2 border-slate-800 pb-3">
               <span className="font-['Silkscreen'] text-sm sm:text-base text-[#38bdf8] flex items-center gap-2">
                 <span>👁️</span> SPOT #{round} PHOTO PEEK
               </span>
               <button
                 onClick={() => setShowPeekModal(false)}
-                className="px-3 py-1 bg-[#f43f5e] hover:bg-[#e11d48] text-white font-['Silkscreen'] text-xs border-2 border-black shadow-[2px_2px_0px_0px_#000] rounded-lg cursor-pointer font-bold"
+                className="px-3 py-1.5 bg-[#f43f5e] hover:bg-[#e11d48] active:scale-95 text-white font-['Silkscreen'] text-xs border-2 border-black shadow-[2px_2px_0px_0px_#000] rounded-lg cursor-pointer font-bold transition-all"
               >
                 CLOSE [X]
               </button>
             </div>
-            <div className="w-full aspect-[16/10] overflow-hidden rounded-xl border-3 border-black bg-black">
+            <div className="relative w-full h-[62vh] sm:h-[70vh] min-h-[360px] max-h-[720px] overflow-hidden rounded-2xl border-4 border-black bg-[#050811] flex items-center justify-center">
+              {/* Soft blurred ambient backdrop to fill frame seamlessly */}
+              <img
+                src={new URL(currentImage.filename, import.meta.url).href}
+                alt=""
+                aria-hidden="true"
+                className="absolute inset-0 w-full h-full object-cover opacity-25 blur-xl scale-110 pointer-events-none"
+              />
               <img
                 src={new URL(currentImage.filename, import.meta.url).href}
                 alt="Peek Spot Photo"
-                className="w-full h-full object-cover"
+                className="relative z-10 max-w-full max-h-full w-auto h-auto object-contain object-center drop-shadow-[0_4px_16px_rgba(0,0,0,0.8)] select-none"
               />
             </div>
           </div>
@@ -215,7 +224,7 @@ function App() {
       )}
 
       {/* Main Content */}
-      <div className="relative z-10 w-full max-w-5xl flex flex-col items-center gap-8">
+      <div className="relative z-10 w-full max-w-6xl flex flex-col items-center gap-8">
         {/* Header - Glassy Retro Style */}
         <header className="w-full bg-[#0b1021]/60 backdrop-blur-lg border-4 border-black shadow-[8px_8px_0px_0px_#000] p-4 sm:p-5 rounded-2xl flex flex-row justify-between items-center gap-3">
           {/* Game Title & Home Navigation */}
@@ -349,37 +358,50 @@ function App() {
             </div>
           </div>
         ) : previewMode ? (
-          <div className="relative w-full max-w-4xl flex flex-col items-center">
+          <div className="relative w-full flex flex-col items-center">
             {/* RETRO TV MONITOR GLASS CONTAINER */}
             <div
               key={round}
-              className="relative w-full max-w-3xl bg-[#0b1021]/60 backdrop-blur-lg border-4 sm:border-6 border-black shadow-[10px_10px_0px_0px_#000] p-4 sm:p-5 rounded-3xl flex flex-col items-center animate-spot-fade"
+              className="relative w-full bg-[#0b1021]/70 backdrop-blur-lg border-4 sm:border-6 border-black shadow-[10px_10px_0px_0px_#000] p-4 sm:p-6 rounded-3xl flex flex-col items-center animate-spot-fade"
             >
               {/* TV Screen Header / Brand Badge */}
-              <div className="w-full flex items-center justify-between px-2 pb-2.5 text-[10px] sm:text-xs font-['Silkscreen'] text-[#38bdf8] tracking-wider">
+              <div className="w-full flex items-center justify-between px-2 pb-3 text-[11px] sm:text-xs font-['Silkscreen'] text-[#38bdf8] tracking-wider">
                 <div className="flex items-center gap-2">
                   <span className="w-2.5 h-2.5 rounded-full bg-[#fbbf24] animate-pulse"></span>
                   <span>CAMPUS CLUE // TARGET FEED</span>
                 </div>
-                <span className="text-[#fef08a]">SPOT #{round}</span>
+                <span className="text-[#fef08a] bg-black/60 px-3 py-1 rounded-lg border border-black font-bold">
+                  SPOT #{round} OF {totalRounds}
+                </span>
               </div>
 
               {/* TV Screen Glass Frame */}
-              <div className="relative aspect-[16/10] w-full max-h-[58vh] overflow-hidden rounded-2xl border-4 border-black bg-black shadow-inner">
+              <div className="relative w-full h-[62vh] sm:h-[70vh] min-h-[420px] max-h-[760px] overflow-hidden rounded-2xl border-4 border-black bg-[#050811] shadow-inner flex items-center justify-center">
+                {/* Soft ambient blurred background so portrait/square photos look immersive instead of dead empty space */}
+                <img
+                  key={`bg-${currentImage.filename}`}
+                  src={new URL(currentImage.filename, import.meta.url).href}
+                  alt=""
+                  aria-hidden="true"
+                  className="absolute inset-0 w-full h-full object-cover opacity-25 blur-xl scale-110 pointer-events-none"
+                />
+
+                {/* Main spot photo: object-contain & centered so it is NEVER cropped */}
                 <img
                   key={currentImage.filename}
                   src={new URL(currentImage.filename, import.meta.url).href}
                   alt="Campus Spot"
-                  className="w-full h-full object-cover animate-spot-fade"
+                  className="relative z-10 max-w-full max-h-full w-auto h-auto object-contain object-center animate-spot-fade select-none drop-shadow-[0_4px_16px_rgba(0,0,0,0.8)]"
                 />
+
                 {/* TV Screen Glare */}
-                <div className="absolute inset-0 bg-gradient-to-b from-white/10 via-transparent to-black/30 pointer-events-none"></div>
+                <div className="absolute inset-0 z-20 bg-gradient-to-b from-white/10 via-transparent to-black/30 pointer-events-none"></div>
               </div>
 
               {/* TV Control Panel (Knobs & Decreasing Progress Time Bar) */}
-              <div className="w-full flex flex-col sm:flex-row items-center justify-between gap-3 pt-3 px-2">
+              <div className="w-full flex flex-col sm:flex-row items-center justify-between gap-4 pt-4 px-2">
                 {/* Decreasing Progress Bar Badge */}
-                <div className="w-full sm:w-72 bg-black/70 backdrop-blur-sm px-4 py-2 font-['Silkscreen'] text-xs border-2 border-black shadow-[3px_3px_0px_0px_#000] rounded-xl flex flex-col gap-1.5">
+                <div className="w-full sm:w-80 bg-black/70 backdrop-blur-sm px-4 py-2.5 font-['Silkscreen'] text-xs border-2 border-black shadow-[3px_3px_0px_0px_#000] rounded-xl flex flex-col gap-1.5">
                   <div className="flex justify-between items-center text-[10px] sm:text-xs">
                     <span className="text-[#fef08a] font-bold">TIME REMAINING</span>
                     <span className="text-[#38bdf8] font-bold">{timeLeft}s</span>
@@ -405,8 +427,26 @@ function App() {
             </div>
           </div>
         ) : (
-          <div className="w-full bg-[#0b1021]/60 backdrop-blur-lg border-4 sm:border-6 border-black shadow-[10px_10px_0px_0px_#000] p-5 sm:p-7 rounded-3xl flex flex-col gap-6">
-            <div className="relative w-full h-[58vh] min-h-[380px] overflow-hidden border-3 border-black">
+          <div className="relative w-full bg-[#0b1021]/60 backdrop-blur-lg border-4 sm:border-6 border-black shadow-[10px_10px_0px_0px_#000] p-4 sm:p-6 rounded-3xl flex flex-col gap-4 pb-24 sm:pb-28">
+            {/* Top Bar inside Map Card: Round Info & Instructions */}
+            <div className="flex flex-wrap gap-3 justify-between items-center font-['Silkscreen'] px-1">
+              <span className="px-3.5 py-1.5 bg-[#060a12] border-2 border-black text-[#38bdf8] text-xs sm:text-sm shadow-[3px_3px_0px_0px_#000] font-bold tracking-wider rounded-xl">
+                Round {round}/{totalRounds}
+              </span>
+              <span className="text-slate-400 text-[11px] sm:text-xs tracking-wider hidden sm:inline">
+                {!guess && !isGuessSubmitted
+                  ? "🎯 CLICK MAP TO DROP PIN"
+                  : !isGuessSubmitted
+                  ? "📍 PIN PLACED - SUBMIT GUESS BELOW"
+                  : "🏁 ROUND RESULTS"}
+              </span>
+              <span className="px-3.5 py-1.5 bg-[#060a12] border-2 border-black text-[#fbbf24] text-xs sm:text-sm shadow-[3px_3px_0px_0px_#000] font-bold tracking-wider rounded-xl">
+                Total Score: {totalScore}
+              </span>
+            </div>
+
+            {/* Map Frame */}
+            <div className="relative w-full h-[52vh] sm:h-[58vh] min-h-[360px] overflow-hidden rounded-2xl border-4 border-black">
               <MapContainer
                 center={[30.354015, 76.367206]}
                 zoom={17}
@@ -436,18 +476,11 @@ function App() {
               </MapContainer>
             </div>
 
-            <div className="flex flex-wrap gap-4 justify-between items-center font-['Silkscreen']">
-              <span className="px-4 py-2.5 bg-[#060a12] border-3 border-black text-[#38bdf8] text-xs sm:text-sm shadow-[4px_4px_0px_0px_#000] font-bold tracking-wider">
-                Round {round}/{totalRounds}
-              </span>
-              <span className="px-4 py-2.5 bg-[#060a12] border-3 border-black text-[#fbbf24] text-xs sm:text-sm shadow-[4px_4px_0px_0px_#000] font-bold tracking-wider">
-                Total Score: {totalScore}
-              </span>
-            </div>
+            {/* IN-VIEWPORT FLOATING CONTROLS (Always on viewport so scrolling is never needed) */}
 
-            {/* Submit button - show when user has made a guess but hasn't submitted yet */}
+            {/* Submit button - floating directly on viewport when guess is placed */}
             {guess && !isGuessSubmitted && (
-              <div className="flex justify-center mt-2">
+              <div className="fixed bottom-5 sm:bottom-7 left-1/2 -translate-x-1/2 z-[1001] animate-spot-fade">
                 <button
                   onClick={() => {
                     const d = getDistance(
@@ -461,39 +494,44 @@ function App() {
                     setRoundScore(score);
                     setIsGuessSubmitted(true);
                   }}
-                  className="px-9 py-4 bg-[#f472b6] hover:bg-[#ec4899] active:translate-x-[4px] active:translate-y-[4px] active:shadow-[2px_2px_0px_0px_#000] text-black font-['Silkscreen'] text-sm sm:text-base border-4 border-black shadow-[6px_6px_0px_0px_#000] cursor-pointer transition-all uppercase font-bold tracking-wider"
+                  className="px-8 sm:px-10 py-3.5 sm:py-4 bg-[#f472b6] hover:bg-[#ec4899] active:translate-x-[3px] active:translate-y-[3px] active:shadow-[2px_2px_0px_0px_#000] text-black font-['Silkscreen'] text-sm sm:text-base border-4 border-black shadow-[6px_6px_0px_0px_#000] cursor-pointer transition-all uppercase font-bold tracking-wider rounded-2xl flex items-center gap-2.5 whitespace-nowrap"
                 >
-                  Submit Guess 🎯
+                  <span>Submit Guess</span>
+                  <span>🎯</span>
                 </button>
               </div>
             )}
 
-            {/* Results - show after submission */}
-            {isGuessSubmitted && distance !== null && (
-              <div className="text-center space-y-1.5 py-2 font-['Space_Grotesk']">
-                <p className="text-lg text-white">
-                  Distance:{" "}
-                  <span className="font-['Silkscreen'] font-bold text-[#5eead4]">
-                    {distance} m
-                  </span>
-                </p>
-                <p className="text-lg text-white">
-                  Round Score:{" "}
-                  <span className="font-['Silkscreen'] font-bold text-[#5eead4]">
-                    {roundScore}
-                  </span>
-                </p>
-              </div>
-            )}
-
-            {/* Next Round button - show after submission */}
+            {/* Results + Next Spot button - floating directly on viewport upon submission */}
             {isGuessSubmitted && (
-              <div className="flex justify-center">
+              <div className="fixed bottom-5 sm:bottom-7 left-1/2 -translate-x-1/2 z-[1001] bg-[#0b1021]/95 backdrop-blur-xl border-4 border-black shadow-[8px_8px_0px_0px_#000] p-3 sm:p-4 rounded-2xl sm:rounded-3xl flex flex-wrap items-center justify-center gap-3 sm:gap-4 animate-spot-fade max-w-[94vw]">
+                {/* Distance badge */}
+                {distance !== null && (
+                  <div className="flex items-center gap-2 px-3 sm:px-4 py-2 bg-[#060a12] border-2 border-black rounded-xl font-['Silkscreen'] text-xs sm:text-sm">
+                    <span className="text-slate-400">DIST:</span>
+                    <span className="text-[#38bdf8] font-bold">{distance} m</span>
+                  </div>
+                )}
+
+                {/* Score badge */}
+                {roundScore !== null && (
+                  <div className="flex items-center gap-2 px-3 sm:px-4 py-2 bg-[#060a12] border-2 border-black rounded-xl font-['Silkscreen'] text-xs sm:text-sm">
+                    <span className="text-slate-400">SCORE:</span>
+                    {roundScore > 0 ? (
+                      <span className="text-[#34d399] font-bold">+1 PT 🎉</span>
+                    ) : (
+                      <span className="text-[#f43f5e] font-bold">0 PT</span>
+                    )}
+                  </div>
+                )}
+
+                {/* Next Spot / Final Score Button */}
                 <button
                   onClick={nextRound}
-                  className="px-9 py-4 bg-[#5eead4] hover:bg-[#2dd4bf] active:translate-x-[4px] active:translate-y-[4px] active:shadow-[2px_2px_0px_0px_#000] text-black font-['Silkscreen'] text-sm sm:text-base border-4 border-black shadow-[6px_6px_0px_0px_#000] cursor-pointer transition-all uppercase font-bold tracking-wider"
+                  className="px-6 sm:px-8 py-2.5 sm:py-3.5 bg-[#5eead4] hover:bg-[#2dd4bf] active:translate-x-[3px] active:translate-y-[3px] active:shadow-[2px_2px_0px_0px_#000] text-black font-['Silkscreen'] text-xs sm:text-sm border-3 sm:border-4 border-black shadow-[4px_4px_0px_0px_#000] cursor-pointer transition-all uppercase font-bold tracking-wider rounded-xl sm:rounded-2xl whitespace-nowrap flex items-center gap-2"
                 >
-                  {round < totalRounds ? "Next Spot ➜" : "See Final Score"}
+                  <span>{round < totalRounds ? "Next Spot" : "See Final Score"}</span>
+                  <span>➜</span>
                 </button>
               </div>
             )}
